@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Event</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/event.css">
+<style>
+#eventOverview {
+    padding: 15px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    color: #000;
+}
+.hover_navs .nav-link:hover {
+    background-color: #f0f0f0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <ul class="navbar-nav me-auto w-100 justify-content-between">
+        <li class="nav-item text-white">Football</li>
+        <li class="nav-item text-white">Hockey</li>
+        <li class="nav-item text-white">Tennis</li>
+        <li class="nav-item text-white">Basketball</li>
+        <li class="nav-item text-white">Volleyball</li>
+    </ul>
+</nav>
+</div>
+
+<div class="container mt-4">
+<nav>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Match Center</a></li>
+    <li class="breadcrumb-item active">Event Details</li>
+  </ol>
+</nav>
+</div>
+
+<div class="container">
+    <ul class="nav nav-tabs hover_navs" id="matchTabs">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#statistics">Statistics</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#translation">Translation</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#lineups">Lineups</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#news">News</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#table">Table</a></li>
+    </ul>
+
+    <div class="tab-content mt-3" id="tabContent">
+        <div class="tab-pane fade show active" id="overview">
+            <div id="eventOverview">Loading...</div>
+        </div>
+        <div class="tab-pane fade" id="statistics"><p class="text-muted">under dev</p></div>
+        <div class="tab-pane fade" id="translation"><p class="text-muted">emptyyyy</p></div>
+        <div class="tab-pane fade" id="lineups"><p class="text-muted">emptyy</p></div>
+        <div class="tab-pane fade" id="news"><p class="text-muted">emptyyyy</p></div>
+        <div class="tab-pane fade" id="table"><p class="text-muted">notempty</p></div>
+    </div>
+</div>
+
+<script>
+const eventId = {{ event_id|tojson }};
+
+async function loadEvent() {
+    const container = document.getElementById("eventOverview");
+    try {
+        const res = await fetch(`/api/event/${eventId}`);
+        if (!res.ok) throw new Error("Event not found");
+        const event = await res.json();
+
+        const homeLogo = event.home_team_logo ? `/static/${event.home_team_logo}` : "/static/img/default_home.png";
+        const awayLogo = event.away_team_logo ? `/static/${event.away_team_logo}` : "/static/img/default_away.png";
+
+        container.innerHTML = `
+            <div class="container">
+                <div class="row align-items-center g-3">
+                    <div class="col-12 text-center">
+                        <h4 class="text-muted mb-3">${event.tournament_name}</h4>
+                    </div>
+                    <div class="col-md-3 col-3 col-sm-4 text-center">
+                        <img src="${homeLogo}" alt="${event.home_team}" class="img-fluid rounded-circle" style="width:80px;height:80px;">
+                        <div class="fw-bold mt-1">${event.home_team}</div>
+                    </div>
+                    <div class="col-md-6 col-sm-4 text-center">
+                        <h1 class="display-4" id="matchScore"></h1>
+                        <p class="text-muted mb-0" id="eventDate">
+                            ${event.start_time ? new Date(event.start_time).toLocaleDateString('en-EN',{year:'numeric',month:'long',day:'numeric'}) : "Дата не указана"}
+                        </p>
+                        <p class="text-muted mb-0" id="countdown"></p>
+                        <p class="text-muted mb-0">${event.sport_name}</p>
+                    </div>
+                    <div class="col-md-3 col-3 col-sm-4 text-center">
+                        <img src="${awayLogo}" alt="${event.away_team}" class="img-fluid rounded-circle" style="width:80px;height:80px;">
+                        <div class="fw-bold mt-1">${event.away_team}</div>
+                    </div>
+                </div>
+                <hr class="my-3">
+                <div class="row text-center text-md-start">
+                    <div class="col-md-6"><small class="text-muted">Venue: ${event.venue}</small></div>
+                    <div class="col-md-6"><small class="text-muted">Referee: ${event.referee_name}</small></div>
+                </div>
+            </div>
+        `;
+
+        // Запускаем таймер
+        if(event.start_time){
+            startCountdown(event.start_time, event.score);
+        } else {
+            document.getElementById("matchScore").textContent = "Match not started";
+        }
+
+    } catch (e) {
+        container.innerHTML = `<p class="text-danger">Ошибка загрузки события: ${e}</p>`;
+    }
+}
+
+function startCountdown(startTime, score) {
+    const countdownEl = document.getElementById("countdown");
+    const scoreEl = document.getElementById("matchScore");
+    let start = new Date(startTime);
+    if (isNaN(start)) start = new Date(startTime.replace(' ', 'T'));
+
+    const now = new Date();
+
+    // Если матч уже начался
+    if (now >= start) {
+        scoreEl.textContent = score ?? "Match started";
+        countdownEl.textContent = "";
+        return;
+    }
+
+    function update() {
+        const now = new Date();
+        const diff = start - now;
+
+        if (diff <= 0) {
+            clearInterval(timerInterval);
+            scoreEl.textContent = score ?? "Match started";
+            countdownEl.textContent = "";
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        scoreEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    // Первый вызов сразу
+    update();
+    const timerInterval = setInterval(update, 1000);
+}
+document.addEventListener('DOMContentLoaded', loadEvent);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

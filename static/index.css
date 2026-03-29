@@ -1,0 +1,57 @@
+.navbar {
+    background-color: rgb(6, 175, 6) !important;
+    width: 100%;
+    height: 50px;
+    padding: 0 10px;
+    display: flex;
+    opacity: 80%;
+}
+
+.navbar ul {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar li {
+    list-style: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.calendar_modify {
+    padding: 5px;
+}
+
+.hover_navs a:hover{
+    color: #000000 ;
+    background: rgb(241, 239, 239);
+}
+
+.card-body:hover {
+    background: #faeee9;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+.accordion-body:hover{
+       background: #faeee9 ;
+    transition: background-color 0.3 ease;
+}
+.event-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar ul li:hover{
+    color: rgb(231, 213, 213) !important;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 1000px) {
+   .navbar-nav li {
+        display: none !important;
+    }
+}

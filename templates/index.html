@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Match Center</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="container">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+    <ul class="navbar-nav me-auto w-100 justify-content-between">
+        <li class="nav-item text-white">Football</li>
+        <li class="nav-item text-white">Hockey</li>
+        <li class="nav-item text-white">Tennis</li>
+        <li class="nav-item text-white">Basketball</li>
+        <li class="nav-item text-white">Volleyball</li>
+    </ul>
+</nav>
+</div>
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Match Center</h1>
+
+        <div class="d-flex align-items-center">
+            <button class="btn btn-outline-secondary me-2 calendar-nav" id="prevDay">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            
+            <button class="btn btn-outline-primary calendar_modify" id="datePickerBtn">
+                <i class="bi bi-calendar3 me-1"></i>
+                <span id="selectedDate">2019-07-18</span>
+            </button>
+
+            <button class="btn btn-outline-secondary ms-2 calendar-nav" id="nextDay">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+
+<!-- REAL DATE INPUT (hidden) -->
+<input type="text" id="realDateInput" style="position:absolute; opacity:0; pointer-events:none;">
+    </div>
+
+    <!-- TABS -->
+    <ul class="nav nav-tabs hover_navs">
+
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#all">ALL</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#football">Football</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#hockey">Hockey</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#tennis">Tennis</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#basket">Basketball</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#volley">Volleyball</a>
+        </li>
+
+    </ul>
+
+    <!-- CONTENT -->
+    <div class="tab-content mt-3">
+
+        <!-- ALL -->
+        <div class="tab-pane fade show active" id="all">
+            <div class="alert alert-primary col-sm-6 col-md-3 col-lg-3">
+                All matches on <span id="allDate">2019-07-18</span>
+            </div>
+            <div class="col-6 col-sm-12 col-lg-5">
+                 <div id="all-content">Loading matches...</div>
+            </div>
+           
+        </div>
+       
+
+        <!-- FOOTBALL -->
+        <div class="tab-pane fade" id="football">
+            <div class="alert alert-info col-sm-6 col-md-3 col-lg-3">
+                Football on <span id="footballDate">2019-07-18</span>
+            </div>
+            <div class="col-6 col-sm-12 col-lg-5">
+                <div id="football-content">Loading football...</div>
+            </div>
+            
+        </div>
+       
+
+        <!-- HOCKEY -->
+        <div class="tab-pane fade" id="hockey">
+            <div class="alert alert-info col-sm-6 col-md-3 col-lg-3">
+                Hockey on <span id="hockeyDate">2019-07-18</span>
+            </div>
+            <div class="col-6 col-sm-12 col-lg-5">
+                <div id="hockey-content">Loading hockey...</div>
+            </div>
+        </div>
+
+        <!-- EMPTY SPORTS (UI ONLY) -->
+        <div class="tab-pane fade col-md-3" id="tennis">
+            <div class="alert alert-secondary">Matches unavailable</div>
+        </div>
+
+        <div class="tab-pane fade col-md-3" id="basket">
+            <div class="alert alert-secondary">Matches unavailable</div>
+        </div>
+
+        <div class="tab-pane fade col-md-3" id="volley">
+            <div class="alert alert-secondary">Matches unavailable</div>
+        </div>
+
+    </div>
+  
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+
+let currentDate = '2019-07-18';
+
+function updateDateDisplay(dateStr) {
+    currentDate = dateStr;
+    document.querySelectorAll('[id$="Date"]').forEach(el => el.textContent = dateStr);
+    document.getElementById('selectedDate').textContent = dateStr;
+
+    // Определяем активную вкладку
+    const activeTab = document.querySelector('.nav-link.active').getAttribute('href').slice(1);
+
+    switch(activeTab){
+        case 'all':
+            loadMatches(dateStr, 'all', 'all-content');
+            break;
+        case 'football':
+            loadFootball(dateStr);
+            break;
+        case 'hockey':
+            loadMatches(dateStr, 'Ice hockey', 'hockey-content');
+            break;
+        case 'tennis':
+            loadMatches(dateStr, 'Tennis', 'tennis');
+            break;
+        case 'basket':
+            loadMatches(dateStr, 'Basketball', 'basket');
+            break;
+        case 'volley':
+            loadMatches(dateStr, 'Volleyball', 'volley');
+            break;
+    }
+}
+
+function changeDate(days) {
+    const date = new Date(currentDate);
+    date.setDate(date.getDate() + days);
+    const newDateStr = date.toISOString().split('T')[0];
+    updateDateDisplay(newDateStr);
+}
+
+/* ---------- CARD TEMPLATE ---------- */
+
+function eventCard(event){
+    return `
+        <div class="card mb-2 event-card"
+             onclick="openEvent(${event.event_id})">
+
+           <div class="card-body">
+
+               <div class="d-flex justify-content-between">
+
+                   <h6 class="mb-1">
+                       ${event.time}
+                       ${event.home_team}
+                       ${event.home_score ?? '?'}
+                       -
+                       ${event.away_score ?? '?'}
+                       ${event.away_team}
+                   </h6>
+
+                   <span class="badge bg-info">
+                       ${event.tournament_name}
+                   </span>
+
+               </div>
+
+               <small class="text-muted">
+                   ${event.venue} | Referee: ${event.referee_name}
+               </small>
+
+           </div>
+       </div>
+    `;
+}
+
+function openEvent(id){
+    window.location.href = `/event/${id}`;
+}
+
+/* ---------- LOAD MATCHES ---------- */
+
+async function loadMatches(date, sport, containerId){
+
+    try{
+        const res = await fetch(`/api/events/${date}/${sport}`);
+        const events = await res.json();
+
+        const container = document.getElementById(containerId);
+
+        if(!events.length){
+            container.innerHTML =
+                '<div class="alert alert-secondary">No matches found</div>';
+            return;
+        }
+
+        container.innerHTML =
+            events.map(eventCard).join('');
+
+    }catch{
+        document.getElementById(containerId).innerHTML =
+            '<div class="alert alert-danger">Loading error</div>';
+    }
+}
+
+/* ---------- FOOTBALL ACCORDION ---------- */
+
+async function loadFootball(date){
+
+    const res = await fetch(`/api/sports/${date}`);
+    const data = await res.json();
+    const football = data.Football || {};
+
+    const container = document.getElementById('football-content');
+
+    if(Object.keys(football).length === 0){
+        container.innerHTML =
+            '<div class="alert alert-secondary">No football matches</div>';
+        return;
+    }
+
+    let html = '<div class="accordion">';
+
+    for(const [tournament,matches] of Object.entries(football)){
+
+        const id = tournament.replace(/[^a-zA-Z0-9]/g,'');
+
+        html += `
+        <div class="accordion-item">
+
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#t${id}">
+                    ${tournament} (${matches.length})
+                </button>
+            </h2>
+
+            <div id="t${id}" class="accordion-collapse collapse">
+                <div class="accordion-body">
+
+                    ${matches.map(m=>`
+                        <div class="event-row"
+                             onclick="openEvent(${m.event_id})">
+
+                            <span>
+                                ${m.time}
+                                ${m.home_team}
+                                ${m.home_score ?? '?'}
+                                -
+                                ${m.away_score ?? '?'}
+                                ${m.away_team}
+                            </span>
+
+                            <span>${m.venue}</span>
+
+                        </div>
+                    `).join('')}
+
+                </div>
+            </div>
+
+        </div>`;
+    }
+
+    html += '</div>';
+
+    container.innerHTML = html;
+}
+
+/* ---------- CALENDAR ---------- */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const datePickerBtn = document.querySelector("#datePickerBtn");
+    let isOpen = false; // наш флаг для toggle
+
+    let fpInstance = flatpickr(datePickerBtn, {
+        dateFormat: "Y-m-d",
+        defaultDate: currentDate,
+        clickOpens: false, // запрещаем стандартное открытие по клику
+        onChange: (s, dateStr) => {
+            updateDateDisplay(dateStr);
+        },
+        onOpen: () => { isOpen = true; },
+        onClose: () => { isOpen = false; }
+    });
+
+    // Toggle открытие/закрытие по клику
+    datePickerBtn.addEventListener('click', () => {
+        if (isOpen) {
+            fpInstance.close();
+        } else {
+            fpInstance.open();
+        }
+    });
+
+    // Стрелки навигации
+    document.getElementById('prevDay').addEventListener('click', () => changeDate(-1));
+    document.getElementById('nextDay').addEventListener('click', () => changeDate(1));
+
+    // Вкладки навигации
+    document.querySelectorAll('.nav-link').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', e => {
+            const href = e.target.getAttribute('href').slice(1);
+
+            if (href === 'all')
+                loadMatches(currentDate, 'all', 'all-content');
+            else if (href === 'football')
+                loadFootball(currentDate);
+            else if (href === 'hockey')
+                loadMatches(currentDate, 'Ice hockey', 'hockey-content');
+            else if (href === 'tennis')
+                loadMatches(currentDate, 'Tennis', 'tennis');
+            else if (href === 'basket')
+                loadMatches(currentDate, 'Basketball', 'basket');
+            else if (href === 'volley')
+                loadMatches(currentDate, 'Volleyball', 'volley');
+        });
+    });
+
+    // Загрузка матчей по умолчанию
+    loadMatches(currentDate, 'all', 'all-content');
+});
+
+</script>
+
+</body>
+</html>
