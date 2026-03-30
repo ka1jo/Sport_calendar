@@ -1,0 +1,7 @@
+AI Reflection
+
+During this project, I used AI tools to support my learning and understanding, especially in backend development and working with APIs. AI helped me clarify technical concepts, understand how to structure requests, and troubleshoot problems in my code.
+
+I am still developing my skills in backend and API work, so AI acted as a guide, helping me learn faster and organize my work more clearly.
+
+All implementation and final decisions were made by me. AI was only used as a learning assistant, similar to using tutorials or documentation. The project reflects my own effort, learning, and problem-solving.
