@@ -30,38 +30,87 @@ Built using **Python (Flask)** and **PostgreSQL**.
 
 ## 📦 Project Setup
 
-1️⃣ Clone repository
+
+## 🚀 Quick Start (Windows/macOS/Linux)
+
+### 1. Clone the repository
+bash
+git clone <your-repo-url>
+cd match_calendar
 
 
-2️⃣ Create virtual environment
+### 2. Create virtual environment
+bash
+# Windows
 python -m venv venv
+venv\Scripts\activate
 
+# macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
 
-3️⃣ Install dependencies
+✅ **`(venv)` prefix = activated**
+
+### 3. Install dependencies
+bash
 pip install -r requirements.txt
 
-Install PostgreSQL
 
-Download from:
+### 4. Install PostgreSQL
+| OS | Instructions |
+|----|--------------|
+| **Windows** | [Download](https://www.postgresql.org/download/windows/) → **Keep port 5432** → Remember `postgres` password |
+| **macOS** | `brew install postgresql@18 && brew services start postgresql@18` |
+| **Ubuntu** | `sudo apt update && sudo apt install postgresql postgresql-contrib` |
 
-https://www.postgresql.org/download/
+**🔧 Windows PATH:** `C:\Program Files\PostgreSQL\18\bin`
 
-Make sure PostgreSQL tools are available:
-
-4️⃣ Create database
+### 5. Create database
+bash
+# Enter postgres password when prompted
 createdb -U postgres match_calendar
 
-5️⃣ Import database
 
-Run from project root folder:
+**❌ Windows:** `"C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres match_calendar`
 
+### 6. Import database schema + data
+bash
 psql -U postgres -d match_calendar -f SQL/database.sql
 
-This will create all tables and insert demo data.
 
-6️⃣ Configure database connection
+✅ **Success =** `CREATE TABLE`, `INSERT`, `COPY` commands
 
-Update test_connection.py
+### 7. Test database connection
+bash
+python test_connection.py
 
-▶️ Run the project
+**✅ Success:**
 
+✅ Database connected!
+📊 Events: 4
+🏆 Teams: 4
+⚽ Sports: 2
+
+
+### 8. Run the project
+bash
+python app.py
+
+**✅ Open:** `http://127.0.0.1:5000`
+
+
+## 🆕 API: Add Event (REST)
+
+### 📝 Curl Example (adds ice hockey match):
+bash
+curl -X POST http://127.0.0.1:5000/add_event \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tournament_id": 2,
+    "home_team_id": 3,
+    "away_team_id": 4,
+    "referee_id": 2,
+    "start_time": "2026-04-02 17:30:00",
+    "venue": "Klagenfurt Arena",
+    "score": null
+  }'
