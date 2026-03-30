@@ -31,8 +31,12 @@ Built using **Python (Flask)** and **PostgreSQL**.
 ## 📦 Project Setup
 
 1️⃣ Clone repository
+
+
 2️⃣ Create virtual environment
 python -m venv venv
+
+
 3️⃣ Install dependencies
 pip install -r requirements.txt
 
