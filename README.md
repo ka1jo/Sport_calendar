@@ -102,15 +102,15 @@ python app.py
 ## 🆕 API: Add Event (REST)
 
 ### 📝 Curl Example (adds ice hockey match):
-bash
+```bash
 curl -X POST http://127.0.0.1:5000/add_event \
-  -H "Content-Type: application/json" \
-  -d '{
-    "tournament_id": 2,
-    "home_team_id": 3,
-    "away_team_id": 4,
-    "referee_id": 2,
-    "start_time": "2026-04-02 17:30:00",
-    "venue": "Klagenfurt Arena",
-    "score": null
-  }'
+-H "Content-Type: application/json" \
+-d '{
+  "tournament_id": 2,
+  "home_team_id": 3,
+  "away_team_id": 4,
+  "referee_id": 2,
+  "start_time": "2026-04-02 17:30:00",
+  "venue": "Klagenfurt Arena",
+  "score": null
+}'
