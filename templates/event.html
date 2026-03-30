@@ -5,18 +5,7 @@
 <title>Event</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/static/event.css">
-<style>
-#eventOverview {
-    padding: 15px;
-    border-radius: 10px;
-    background-size: cover;
-    background-position: center;
-    color: #000;
-}
-.hover_navs .nav-link:hover {
-    background-color: #f0f0f0;
-}
-</style>
+
 </head>
 <body>
 <div class="container">
@@ -106,7 +95,7 @@ async function loadEvent() {
             </div>
         `;
 
-        // Запускаем таймер
+        // run countdown if start_time exists, otherwise show "Match not started"
         if(event.start_time){
             startCountdown(event.start_time, event.score);
         } else {
@@ -126,7 +115,7 @@ function startCountdown(startTime, score) {
 
     const now = new Date();
 
-    // Если матч уже начался
+    // if match already started, show score or default message
     if (now >= start) {
         scoreEl.textContent = score ?? "Match started";
         countdownEl.textContent = "";
@@ -152,7 +141,7 @@ function startCountdown(startTime, score) {
         scoreEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
-    // Первый вызов сразу
+    // first call to set initial value immediately
     update();
     const timerInterval = setInterval(update, 1000);
 }

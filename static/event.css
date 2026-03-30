@@ -55,3 +55,14 @@ tabsss
         display: none !important;
     }
 }
+
+#eventOverview {
+    padding: 15px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    color: #000;
+}
+.hover_navs .nav-link:hover {
+    background-color: #f0f0f0;
+}

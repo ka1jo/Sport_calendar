@@ -92,7 +92,6 @@
             <div class="col-6 col-sm-12 col-lg-5">
                  <div id="all-content">Loading matches...</div>
             </div>
-           
         </div>
        
 
@@ -104,7 +103,6 @@
             <div class="col-6 col-sm-12 col-lg-5">
                 <div id="football-content">Loading football...</div>
             </div>
-            
         </div>
        
 
@@ -143,12 +141,16 @@
 
 let currentDate = '2019-07-18';
 
+function getScoreDisplay(score) {
+    return (score != null && score !== 0) ? score : '';
+}
+
 function updateDateDisplay(dateStr) {
     currentDate = dateStr;
     document.querySelectorAll('[id$="Date"]').forEach(el => el.textContent = dateStr);
     document.getElementById('selectedDate').textContent = dateStr;
 
-    // Определяем активную вкладку
+    // open active tab
     const activeTab = document.querySelector('.nav-link.active').getAttribute('href').slice(1);
 
     switch(activeTab){
@@ -194,9 +196,9 @@ function eventCard(event){
                    <h6 class="mb-1">
                        ${event.time}
                        ${event.home_team}
-                       ${event.home_score ?? '?'}
+                       ${getScoreDisplay(event.home_score)}
                        -
-                       ${event.away_score ?? '?'}
+                       ${getScoreDisplay(event.away_score)}
                        ${event.away_team}
                    </h6>
 
@@ -287,9 +289,9 @@ async function loadFootball(date){
                             <span>
                                 ${m.time}
                                 ${m.home_team}
-                                ${m.home_score ?? '?'}
+                                ${getScoreDisplay(m.home_score)}
                                 -
-                                ${m.away_score ?? '?'}
+                                ${getScoreDisplay(m.away_score)}
                                 ${m.away_team}
                             </span>
 
@@ -314,12 +316,12 @@ async function loadFootball(date){
 document.addEventListener('DOMContentLoaded', () => {
 
     const datePickerBtn = document.querySelector("#datePickerBtn");
-    let isOpen = false; // наш флаг для toggle
+    let isOpen = false; // our flag for toggle 
 
     let fpInstance = flatpickr(datePickerBtn, {
         dateFormat: "Y-m-d",
         defaultDate: currentDate,
-        clickOpens: false, // запрещаем стандартное открытие по клику
+        clickOpens: false, // 
         onChange: (s, dateStr) => {
             updateDateDisplay(dateStr);
         },
@@ -327,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
         onClose: () => { isOpen = false; }
     });
 
-    // Toggle открытие/закрытие по клику
+    // toggle calendar
     datePickerBtn.addEventListener('click', () => {
         if (isOpen) {
             fpInstance.close();
@@ -336,11 +338,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Стрелки навигации
+    // page navigation
     document.getElementById('prevDay').addEventListener('click', () => changeDate(-1));
     document.getElementById('nextDay').addEventListener('click', () => changeDate(1));
 
-    // Вкладки навигации
+    // navigate tabs
     document.querySelectorAll('.nav-link').forEach(tab => {
         tab.addEventListener('shown.bs.tab', e => {
             const href = e.target.getAttribute('href').slice(1);
@@ -360,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Загрузка матчей по умолчанию
+    // load mathches for default active tab (ALL)
     loadMatches(currentDate, 'all', 'all-content');
 });
 
