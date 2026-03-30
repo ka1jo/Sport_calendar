@@ -41,8 +41,9 @@ cd match_calendar
 
 
 ### 2. Create virtual environment
-```bash
+
 # Windows
+```bash
 python -m venv venv
 venv\Scripts\activate
 ```
@@ -50,7 +51,7 @@ venv\Scripts\activate
 python3 -m venv venv
 source venv/bin/activate
 
-✅ **`(venv)` prefix = activated**
+**`(venv)` prefix = activated**
 
 ### 3. Install dependencies
 ```bash
@@ -66,32 +67,33 @@ pip install -r requirements.txt
 **🔧 Windows PATH:** `C:\Program Files\PostgreSQL\18\bin`
 
 ### 5. Create database
-```bash
+
 # Enter postgres password when prompted
+```bash
 createdb -U postgres match_calendar
 ```
 
-**❌ Windows:** `"C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres match_calendar`
+**Windows:** `"C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres match_calendar`
 
 ### 6. Import database schema + data
 ```bash
 psql -U postgres -d match_calendar -f SQL/database.sql
 ```
 
-✅ **Success =** `CREATE TABLE`, `INSERT`, `COPY` commands
+**Success =** `CREATE TABLE`, `INSERT`, `COPY` commands
 
 ### 7. Test database connection
 ```bash
 python test_connection.py
 ```
-**✅ Success:**
+**Success:**
 
-✅ Database connected!
+Database connected!
 📊 Events: 4
 🏆 Teams: 4
 ⚽ Sports: 2
 
-**✅ Open:** `http://127.0.0.1:5000`
+**Open:** `http://127.0.0.1:5000`
 
 
 ## 🆕 API: Add Event (REST)
