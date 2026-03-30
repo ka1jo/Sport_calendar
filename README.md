@@ -34,13 +34,13 @@ Built using **Python (Flask)** and **PostgreSQL**.
 ## 🚀 Quick Start (Windows/macOS/Linux)
 
 ### 1. Clone the repository
-bash
+```bash
 git clone <your-repo-url>
 cd match_calendar
 
 
 ### 2. Create virtual environment
-bash
+```bash
 # Windows
 python -m venv venv
 venv\Scripts\activate
@@ -52,7 +52,7 @@ source venv/bin/activate
 ✅ **`(venv)` prefix = activated**
 
 ### 3. Install dependencies
-bash
+```bash
 pip install -r requirements.txt
 
 
@@ -66,7 +66,7 @@ pip install -r requirements.txt
 **🔧 Windows PATH:** `C:\Program Files\PostgreSQL\18\bin`
 
 ### 5. Create database
-bash
+```bash
 # Enter postgres password when prompted
 createdb -U postgres match_calendar
 
@@ -74,14 +74,14 @@ createdb -U postgres match_calendar
 **❌ Windows:** `"C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres match_calendar`
 
 ### 6. Import database schema + data
-bash
+```bash
 psql -U postgres -d match_calendar -f SQL/database.sql
 
 
 ✅ **Success =** `CREATE TABLE`, `INSERT`, `COPY` commands
 
 ### 7. Test database connection
-bash
+```bash
 python test_connection.py
 
 **✅ Success:**
@@ -93,7 +93,7 @@ python test_connection.py
 
 
 ### 8. Run the project
-bash
+```bash
 python app.py
 
 **✅ Open:** `http://127.0.0.1:5000`
